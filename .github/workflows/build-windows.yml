@@ -16,9 +16,7 @@ jobs:
         include:
           - runner: sdk-windows-8-core-2
             arch: x86_64
-          - runner: windows-11-arm
-            arch: arm64
-
+     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
