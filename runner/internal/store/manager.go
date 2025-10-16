@@ -30,18 +30,23 @@ func Get() *Store {
 
 // init sets up the store's directory structure
 func (s *Store) init() {
-	// Get user's cache directory (OS-specific)
-	homeDir, e := os.UserHomeDir()
-	if e != nil {
-		panic(e)
+	// Support read home path from environment variable 'NEXA_HOME'
+	nexaHome := os.Getenv("NEXA_HOME")
+	if nexaHome != "" {
+		s.home = nexaHome
+	} else {
+		// Get user's cache directory (OS-specific)
+		homeDir, e := os.UserHomeDir()
+		if e != nil {
+			panic(e)
+		}
+		// Set nexa cache directory
+		s.home = filepath.Join(homeDir, ".cache", "nexa.ai", "nexa_sdk")
 	}
-
-	// Set nexa cache directory
-	s.home = filepath.Join(homeDir, ".cache", "nexa.ai", "nexa_sdk")
 
 	// Create models directory structure
 	for _, d := range []string{"models"} {
-		e = os.MkdirAll(filepath.Join(s.home, d), 0o770)
+		e := os.MkdirAll(filepath.Join(s.home, d), 0o770)
 		if e != nil {
 			panic(e)
 		}
